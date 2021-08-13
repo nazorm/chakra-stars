@@ -1,25 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {StarCard} from './StarCard'
+import { Spin } from 'antd';
+import { StarCard } from './StarCard'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
 import './App.css';
+import { IStarCardProps } from './types';
 
 const App = () => {
-  const [starsList, setStarsList] = useState([])
+  const [starsList, setStarsList] = useState<IStarCardProps[]>([])
+  const [loading, setLoading] = useState(true)
 
 
   const fetchStars = async () => {
     const res = await axios.get('https://swapi.dev/api/people')
-    console.log(res.data)
+    setLoading(false)
+    console.log(res.data.results)
+    setStarsList(res.data.results)
   }
   useEffect(() => {
     fetchStars();
   }, [])
 
   return (
-    <div className="App">
-      <h1>Chakra</h1>
-      <StarCard/>
-    </div>
+    <Router basename="/chakrastars">
+      <div className="App">
+        <Switch>
+          <Route exact path='/'>
+            {loading ? <Spin /> :
+              <div className='starlist-container'>
+                {starsList.map((star) => {
+                  return (
+                    <StarCard
+                      key={star.created}
+                      name={star.name}
+                      birth_year={star.birth_year}
+                      eye_color={star.eye_color}
+                      hair_color={star.hair_color}
+                      skin_color={star.skin_color}
+                      gender={star.gender}
+                      films={star.films}
+                    />
+                  )
+                })}
+              </div>
+
+            }
+
+          </Route>
+
+
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
