@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Spin } from 'antd';
+import { Spinner, Image, Box, Heading } from "@chakra-ui/react"
 import { StarCard } from './StarCard'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
-import './App.css';
+import './App.scss';
 import { IStarCardProps } from './types';
+import yoda from './assets/starwars.jpg';
 
 const App = () => {
   const [starsList, setStarsList] = useState<IStarCardProps[]>([])
@@ -22,37 +21,50 @@ const App = () => {
     fetchStars();
   }, [])
 
+
+
   return (
-    <Router basename="/chakrastars">
-      <div className="App">
-        <Switch>
-          <Route exact path='/'>
-            {loading ? <Spin /> :
-              <div className='starlist-container'>
-                {starsList.map((star) => {
-                  return (
-                    <StarCard
-                      key={star.created}
-                      name={star.name}
-                      birth_year={star.birth_year}
-                      eye_color={star.eye_color}
-                      hair_color={star.hair_color}
-                      skin_color={star.skin_color}
-                      gender={star.gender}
-                      films={star.films}
-                    />
-                  )
-                })}
-              </div>
+    <Box className="App" style={{ backgroundColor: '#0066b2' }} maxW="100%">
+      <header className='header' style={{ position: 'fixed', zIndex: 2 }}>This is header</header>
+      <Box className='yoda-container'>
+        <Image src={yoda} alt={'yoda'} mx="0" size='1500px'
+          objectFit="cover" />
+        <Heading>May the force be with you!!!</Heading>
 
-            }
+      </Box>
 
-          </Route>
+      {loading ? <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+      /> :
+        <div className='starlist-container'>
+          <Box className='ymandatory-wrapper'>
+            {starsList.map((star) => {
+              return (
+                <StarCard
+                  key={star.created}
+                  name={star.name}
+                  birth_year={star.birth_year}
+                  eye_color={star.eye_color}
+                  hair_color={star.hair_color}
+                  skin_color={star.skin_color}
+                  gender={star.gender}
+                  films={star.films}
+                  starships={star.starships}
+                  vehicles={star.vehicles}
+                />
+              )
+            })}
+          </Box>
+        </div>
+      }
 
+      <footer className='footer'>This is footer</footer>
+    </Box>
 
-        </Switch>
-      </div>
-    </Router>
   );
 }
 
