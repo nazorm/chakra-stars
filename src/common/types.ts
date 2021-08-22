@@ -11,6 +11,7 @@ export interface IStarCardProps {
   vehicles: IVehicles[];
   films: IFilms[];
 }
+
 export interface IFilms {
   films: string;
 }

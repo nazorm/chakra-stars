@@ -3,23 +3,22 @@ import axios from 'axios';
 import { Spinner, Image, Box, Heading } from "@chakra-ui/react"
 import { StarCard } from './StarCard'
 import './App.scss';
-import { IStarCardProps } from './types';
+import { IStarCardProps } from './common/types';
+import useFetch from './hooks/useFetch';
 import yoda from './assets/starwars.jpg';
+import { useQuery } from 'react-query';
 
 const App = () => {
-  const [starsList, setStarsList] = useState<IStarCardProps[]>([])
-  const [loading, setLoading] = useState(true)
+  const { isLoading, error, data } = useQuery('',() =>
+    fetch('https://swapi.dev/api/people').then(res =>
+      res.json()
+    )
+  )
 
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error...</p>
 
-  const fetchStars = async () => {
-    const res = await axios.get('https://swapi.dev/api/people')
-    setLoading(false)
-    console.log(res.data.results)
-    setStarsList(res.data.results)
-  }
-  useEffect(() => {
-    fetchStars();
-  }, [])
+  //const { loading, error, data } = useFetch(https://swapi.dev/api/people);
 
 
 
@@ -27,13 +26,12 @@ const App = () => {
     <Box className="App" style={{ backgroundColor: '#0066b2' }} maxW="100%">
       <header className='header' style={{ position: 'fixed', zIndex: 2 }}>This is header</header>
       <Box className='yoda-container'>
-        <Image src={yoda} alt={'yoda'} mx="0" size='1500px'
-          objectFit="cover" />
+        <img src={yoda} alt={'yoda'} className='yoda-image' />
         <Heading>May the force be with you!!!</Heading>
 
       </Box>
 
-      {loading ? <Spinner
+      {isLoading || !data ? <Spinner
         thickness="4px"
         speed="0.65s"
         emptyColor="gray.200"
@@ -42,7 +40,7 @@ const App = () => {
       /> :
         <div className='starlist-container'>
           <Box className='ymandatory-wrapper'>
-            {starsList.map((star) => {
+            {data.results.map((star:any) => {
               return (
                 <StarCard
                   key={star.created}

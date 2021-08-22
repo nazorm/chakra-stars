@@ -1,5 +1,5 @@
 import React from 'react';
-import { IStarCardProps } from './types';
+import { IStarCardProps } from './common/types';
 import { Heading, Text, useDisclosure } from '@chakra-ui/react';
 import {
     Button, Box, Badge, Modal,

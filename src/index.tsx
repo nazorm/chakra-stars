@@ -5,8 +5,10 @@ import App from './App';
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react"
 import reportWebVitals from './reportWebVitals';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 
-const colors={
+
+const colors = {
   brand: {
     900: "#1a365d",
     800: "#153e75",
@@ -16,15 +18,19 @@ const colors={
     heading: "Open Sans",
     body: "Raleway",
   },
-  
+
 }
 
 const theme = extendTheme({ colors })
+
+const queryClient = new QueryClient()
 ReactDOM.render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <App />
+      </ChakraProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
