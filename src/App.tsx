@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Spinner, Image, Box, Heading } from "@chakra-ui/react"
+
+import { Spinner, Box, Heading } from "@chakra-ui/react"
 import { StarCard } from './StarCard'
 import './App.scss';
-import { IStarCardProps } from './common/types';
 import useFetch from './hooks/useFetch';
 import yoda from './assets/starwars.jpg';
 import { useQuery } from 'react-query';
