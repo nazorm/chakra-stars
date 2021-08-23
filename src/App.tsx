@@ -2,12 +2,12 @@
 import { Spinner, Box, Heading } from "@chakra-ui/react"
 import { StarCard } from './StarCard'
 import './App.scss';
-import useFetch from './hooks/useFetch';
+//import useFetch from './hooks/useFetch';
 import yoda from './assets/starwars.jpg';
 import { useQuery } from 'react-query';
 
 const App = () => {
-  const { isLoading, error, data } = useQuery('',() =>
+  const { isLoading, error, data } = useQuery('', () =>
     fetch('https://swapi.dev/api/people').then(res =>
       res.json()
     )
@@ -21,8 +21,25 @@ const App = () => {
 
 
   return (
-    <Box className="App" style={{ backgroundColor: '#0066b2' }} maxW="100%">
-      <header className='header' style={{ position: 'fixed', zIndex: 2 }}>This is header</header>
+    <div className="App" style={{ backgroundColor: '#0066b2' }} >
+      <header className='header' style={{ position: 'fixed', zIndex: 2 }}>
+        <h1>Chakra Stars</h1>
+        <nav>
+          <ul>
+            <li>
+              About
+            </li>
+
+            <li>
+              Contact
+            </li>
+            <li>
+              Account
+            </li>
+          </ul>
+        </nav>
+
+      </header>
       <Box className='yoda-container'>
         <img src={yoda} alt={'yoda'} className='yoda-image' />
         <Heading>May the force be with you!!!</Heading>
@@ -38,7 +55,7 @@ const App = () => {
       /> :
         <div className='starlist-container'>
           <Box className='ymandatory-wrapper'>
-            {data.results.map((star:any) => {
+            {data.results.map((star: any) => {
               return (
                 <StarCard
                   key={star.created}
@@ -58,8 +75,12 @@ const App = () => {
         </div>
       }
 
-      <footer className='footer'>This is footer</footer>
-    </Box>
+      <footer className='footer'>
+      <p>Make the change</p>
+      <p>The world is your canvas</p>
+        
+        </footer>
+    </div>
 
   );
 }
