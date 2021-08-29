@@ -40,9 +40,9 @@ export const StarCard = (children: IStarCardProps) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
 
-        <Box className='starCard' style={{ backgroundColor: 'whitesmoke' }}>
+        <Box className='starCard' style={{ backgroundColor: 'white' }}>
             <Heading>{name}</Heading>
-            <Text>gender:  {gender}</Text>
+            <Text>gender:  {gender === 'n/a' ? 'Unspecified' : gender.charAt(0).toUpperCase() + gender.slice(1)}</Text>
             <Text>birth: {birth_year}</Text>
             <Text>Movies : {movies.length}</Text>
             <Button onClick={onOpen} colorScheme="blue" >See More</Button>
@@ -67,9 +67,9 @@ export const StarCard = (children: IStarCardProps) => {
                                 {starShips.length} starship(s) &bull; {vehicless.length} vehicle
                             </Box>
                         </Box>
-                        <Text>gender:  {gender}</Text>
+                        <Text>gender: {gender === 'n/a' ? 'Unspecified' : gender.charAt(0).toUpperCase() + gender.slice(1)}</Text>
                         <Text>birth: {birth_year}</Text>
-                        <Text>hair : {hair_color}</Text>
+                        <Text>hair : {hair_color === 'n/a' || 'none' ? 'Unspecified' : hair_color.charAt(0).toUpperCase() + hair_color.slice(1)}</Text>
                         <Text>eye : {eye_color}</Text>
                         <Text>skin : {skin_color}</Text>
                         <Text>Movies : {movies}</Text>

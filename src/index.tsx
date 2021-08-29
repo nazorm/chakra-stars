@@ -5,7 +5,7 @@ import App from './App';
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react"
 import reportWebVitals from './reportWebVitals';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 
 const colors = {

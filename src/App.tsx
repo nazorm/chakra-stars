@@ -1,44 +1,107 @@
 
 import { Spinner, Box, Heading } from "@chakra-ui/react"
 import { StarCard } from './StarCard'
+import { BiSun } from 'react-icons/bi';
+import { BsMoon } from 'react-icons/bs';
 import './App.scss';
-import useFetch from './hooks/useFetch';
+//import useFetch from './hooks/useFetch';
 import yoda from './assets/starwars.jpg';
-import { useQuery } from 'react-query';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { QueryClient, useQuery, useQueryClient } from 'react-query';
+import { useEffect, useState } from "react";
+import axios from 'axios'
+
 
 const App = () => {
-  const { isLoading, error, data } = useQuery('',() =>
-    fetch('https://swapi.dev/api/people').then(res =>
-      res.json()
-    )
+  const queryClient = useQueryClient()
+  const [theme, setTheme] = useState<boolean>(true);
+  const [scrolled, setScrolled] = useState<boolean>(false)
+  const [pageCount, setPageCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1)
+
+
+
+  async function getPeople(currentPage: number) {
+    const { data } = await axios.get(`https://swapi.dev/api/people/?page=${currentPage}`)
+    setPageCount(data.count)
+    return data
+
+  }
+
+  const { status, data, error, isPreviousData } = useQuery(
+    ['results', currentPage],
+    () => getPeople(currentPage),
+    { keepPreviousData: true }
   )
 
-  if (isLoading) return <p>Loading...</p>
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    if (data?.next) {
+      queryClient.prefetchQuery(['results', currentPage + 1], () =>
+        getPeople(currentPage + 1)
+      )
+    }
+  }, [data, currentPage, queryClient])
   if (error) return <p>Error...</p>
 
-  //const { loading, error, data } = useFetch(https://swapi.dev/api/people);
 
+  // handle theme change
+  const handleTheme = () => {
+    setTheme(!theme)
+  }
 
+  // handle scroll
+  const handleScroll = () => {
+    if (window.pageYOffset > 0) {
+      setScrolled(true)
+    } else {
+      setScrolled(false)
+    }
+
+  }
 
   return (
-    <Box className="App" style={{ backgroundColor: '#0066b2' }} maxW="100%">
-      <header className='header' style={{ position: 'fixed', zIndex: 2 }}>This is header</header>
+    <div className="App">
+      <header className={scrolled ? ' header scrolled-header' : 'header static-header'} style={{ position: 'fixed', zIndex: 2 }}>
+        <h1>Chakra Stars</h1>
+        <nav>
+          <ul>
+            <li>
+              About
+            </li>
+
+            <li>
+              Contact
+            </li>
+            <li>
+              Account
+            </li>
+            <li className={scrolled ? 'sun' : 'moon'}>
+              {theme ? <BiSun onClick={handleTheme} /> : <BsMoon onClick={handleTheme} />}
+
+            </li>
+          </ul>
+        </nav>
+      </header>
       <Box className='yoda-container'>
         <img src={yoda} alt={'yoda'} className='yoda-image' />
         <Heading>May the force be with you!!!</Heading>
-
       </Box>
 
-      {isLoading || !data ? <Spinner
+
+      {status==='loading' || !data ? <Spinner
         thickness="4px"
         speed="0.65s"
         emptyColor="gray.200"
         color="blue.500"
         size="xl"
-      /> :
-        <div className='starlist-container'>
+        className='spinner'
+      />
+        :
+        <div className={theme ? ' starlist-container dark-starlist-container' : 'starlist-container light-starlist-container'}   >
           <Box className='ymandatory-wrapper'>
-            {data.results.map((star:any) => {
+            {data.results.map((star: any) => {
               return (
                 <StarCard
                   key={star.created}
@@ -57,9 +120,37 @@ const App = () => {
           </Box>
         </div>
       }
+      {status === 'loading' ? '' : (
+        <div className={theme? 'pagination darktheme-pagination' : 'pagination lighttheme-pagination'}>
+          <div className= {theme? 'pages darktheme-pages' : 'pages lighttheme-pages' }>
+            <button className={currentPage === 1? 'disabled' : ''}
+              onClick={() => setCurrentPage(old => Math.max(old - 1, 1))}
+            >
+              Previous
+            </button>
+            <p> {currentPage}/{pageCount}</p>
+            <button className={isPreviousData || !data?.next? 'disabled': ''}
+              onClick={() => {
+                setCurrentPage(old => (data?.next ? old + 1 : old))
+              }}
+            >
+              Next
+            </button>
+          </div>
 
-      <footer className='footer'>This is footer</footer>
-    </Box>
+
+        </div>
+      )}
+
+
+
+
+      <footer className={theme ? 'footer darktheme-footer' : 'footer lighttheme-footer'}>
+        <p>Take the <span>Leap</span></p>
+        <p>The world is your <span>Oyster</span></p>
+
+      </footer>
+    </div>
 
   );
 }
