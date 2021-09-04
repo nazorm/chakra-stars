@@ -1,13 +1,11 @@
 
-import { Spinner, Box, Heading } from "@chakra-ui/react"
-import { StarCard } from './StarCard'
+import { Spinner, Box, Heading, Switch, Image } from "@chakra-ui/react"
+import { StarCard } from './common/StarCard'
 import { BiSun } from 'react-icons/bi';
 import { BsMoon } from 'react-icons/bs';
 import './App.scss';
-//import useFetch from './hooks/useFetch';
 import yoda from './assets/starwars.jpg';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { QueryClient, useQuery, useQueryClient } from 'react-query';
+import {  useQuery, useQueryClient } from 'react-query';
 import { useEffect, useState } from "react";
 import axios from 'axios'
 
@@ -16,14 +14,14 @@ const App = () => {
   const queryClient = useQueryClient()
   const [theme, setTheme] = useState<boolean>(true);
   const [scrolled, setScrolled] = useState<boolean>(false)
-  const [pageCount, setPageCount] = useState(1);
-  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
 
 
-  async function getPeople(currentPage: number) {
+  const getPeople = async (currentPage: number) =>{
     const { data } = await axios.get(`https://swapi.dev/api/people/?page=${currentPage}`)
-    setPageCount(data.count)
+   
+  
     return data
 
   }
@@ -60,7 +58,6 @@ const App = () => {
     }
 
   }
-
   return (
     <div className="App">
       <header className={scrolled ? ' header scrolled-header' : 'header static-header'} style={{ position: 'fixed', zIndex: 2 }}>
@@ -85,7 +82,7 @@ const App = () => {
         </nav>
       </header>
       <Box className='yoda-container'>
-        <img src={yoda} alt={'yoda'} className='yoda-image' />
+        <Image src={yoda} alt={'yoda'} className='yoda-image' />
         <Heading>May the force be with you!!!</Heading>
       </Box>
 
@@ -100,7 +97,7 @@ const App = () => {
       />
         :
         <div className={theme ? ' starlist-container dark-starlist-container' : 'starlist-container light-starlist-container'}   >
-          <Box className='ymandatory-wrapper'>
+          <Box className='ymandatory-wrapper' px={{md:'50px', lg:"80px"}}>
             {data.results.map((star: any) => {
               return (
                 <StarCard
@@ -128,7 +125,7 @@ const App = () => {
             >
               Previous
             </button>
-            <p> {currentPage}/{pageCount}</p>
+            <p> {currentPage}/{data.count}</p>
             <button className={isPreviousData || !data?.next? 'disabled': ''}
               onClick={() => {
                 setCurrentPage(old => (data?.next ? old + 1 : old))
